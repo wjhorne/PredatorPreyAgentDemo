@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "predator-prey-simulation": {
+      "command": "python",
+      "args": [
+        "mcp_server.py"
+      ],
+      "cwd": "${workspaceFolder}/PipelineSolution",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    }
+  }
+}

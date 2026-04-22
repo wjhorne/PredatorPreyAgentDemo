@@ -1,0 +1,34 @@
+===============================================================================
+QUICKSTART FOR AI ASSISTANTS
+===============================================================================
+
+SETUP (one time):
+  ./setup.sh
+
+QUERY:
+  ./query.sh "How many foxes at step 180?"
+  ./query.sh "Generate a PDF report" --output report.pdf
+  ./query.sh "50x50 grid, 200 steps" --validate
+
+EXAMPLES:
+  "How many rabbits at step 50?"
+  "Show me foxes and rabbits at step 100"
+  "What are the populations at timestep 200?"
+  "Generate a report"
+  "Create a PDF with default parameters"
+  "Simulate with nx=30, ny=30 for 200 steps"
+  "Validate against the baseline"
+
+DEFAULT PARAMETERS:
+  Grid: 50×50
+  Steps: 360
+  Seed: 12345 (for reproducibility)
+
+OUTPUT FORMATS:
+  --format text (default): Print to terminal
+  --format pdf: Generate multi-page PDF with plots
+
+See .instructions.md for detailed documentation.
+See README.md for full guide.
+
+===============================================================================
