@@ -2,6 +2,18 @@
 
 Using agentic AI, build a small Python program that simulations rabbits and foxes on a 2D grid for Nt steps. Rabbits grow locally, foxes consume rabbits and grow based on their consumption, both diffuse to neighboring cells. Animate the result with matplotlib and report species populations at each time step. Provide a command line interface to specify grid size, steps, and key model parameters. Keep dependencies to numpy + matplotlib. 
 
+## Code Development Instructions
+
+With the agentic tool of your choice, start from an empty directory and use prompts to successfully create the requisite code. Test the resulting code by hand to roughly verify results. You may introduce the requirements below as a prompt, but the novelty must be one of your own choosing.
+
+**Example using Gemini**
+- install gemini-cli as appropriate for your workstation
+- mkdir project_directory
+- cd project_directory
+- gemini -s
+- Use oauth to log into your Gemini account
+- prompt the agent as necessary
+
 ## Final Code Program Requirements
 
 - The simulation must be based on feasible prey-predator dynamics whether equation based or otherwise
@@ -17,6 +29,26 @@ Using agentic AI, build a small Python program that simulations rabbits and foxe
 ## Simulation Analysis Project Goal
 
 Using agentic AI, create an agent based pipeline to run the predator-prey simulation code located in the `DevelopmentSolution/` folder. A user should be able to ask an agent in plain language to predict the number of rabbits or foxes at a specified time step and to produce corresponding plots of populations. Additionally the pipeline should be able to produce a `.pdf`report showing a contour plot of the populations at the final time step as well as a line plot of the populations over time.
+
+## Simulation Analysis Instructions
+
+Clone the PredatorPreyAgentDemo repo. With an agentic AI tool of your choice enter the repo directory and use prompts to create the pipeline. Test the pipeline using the same agentic tool you used for creation of the pipeline. 
+
+**Example using Gemini**
+
+- install gemini-cli as appropriate for your workstation
+- git clone git@github.com:wjhorne/PredatorPreyAgentDemo.git
+- cd PredatorPreyAgentDemo
+- gemini -s
+- Use oauth to log into your Gemini account
+- prompt the agent as necessary to create the pipeline inside of a folder within PredatorPreyAgentDemo
+
+**To test the pipeline**
+- cd PredatorPreyAgentDemo
+- gemini -s
+- Use oauth to log into your Gemini acount
+- prompt the agent to parse your project directory for the pipeline
+- Ask the agent pipeline test questions to show requirements are fulfilled 
 
 ## Simulation Pipeline Requirements
 
