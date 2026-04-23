@@ -25,6 +25,6 @@ Using agentic AI, create an agent based pipeline to run the predator-prey simula
 - Both a `.pdf` report and text outputs must be supported
 - Introduce one new novelty not found in `PipelineSolution`. For some examples:
   - Introduce the ability to perform parameter sweeps to assess survival scenarios for the rabbits or foxes
-  - Create a goal-seeking capability where a user could ask the agent questions like `What rabbit reproduction rate keeps foxes alive past t - 200?"
+  - Create a goal-seeking capability where an agent could answer questions like `What rabbit reproduction rate keeps foxes alive past t = 200?`
   - Produce uncertainty bands of fox and rabbit populations via ensemble runs of different seeds
   - Introduce the ability to perform sensitivity analysis of results from the simulation to the parameters
