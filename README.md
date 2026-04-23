@@ -32,7 +32,7 @@ Using agentic AI, create an agent based pipeline to run the predator-prey simula
 
 ## Simulation Analysis Instructions
 
-Clone the PredatorPreyAgentDemo repo. With an agentic AI tool of your choice enter the repo directory and use prompts to create the pipeline. Test the pipeline using the same agentic tool you used for creation of the pipeline. 
+Clone the PredatorPreyAgentDemo repo. With an agentic AI tool of your choice enter the repo directory and use prompts to create the pipeline. You may include the requirements below as part of your prompts, but the novelty must be of your own choice. Test the pipeline using the same agentic tool you used for creation of the pipeline. 
 
 **Example using Gemini**
 
