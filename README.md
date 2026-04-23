@@ -10,7 +10,7 @@ Using agentic AI, build a small Python program that simulations rabbits and foxe
 - The input of the program must be a grid_size (Nx, Ny), number of time steps Nt, and any relevant modeling parameters
 - You must introduce one new novelty not found in the `DevelopmentSolution/` result for this task. For some potential examples:
     - Add a third species that is consumed by rabbits turning them into a predator
-    - Use a particle-statistics simulation technique instead of diffusion + reaction equations simulation to mimic the dynamics
+    - Use a particle-statistics simulation technique instead of diffusion + reaction equations to mimic the dynamics
     - Introduce distributed plant life that determines the growth of rabbits locally
     - Introduce terrain types within the grid that make things more difficult, or easier, for foxes or rabbits to enter
 
