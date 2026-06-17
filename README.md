@@ -1,4 +1,5 @@
 # PredatorPreyAgentDemo
+<img width="1200" height="576" alt="simulation" src="https://github.com/user-attachments/assets/a8a2d49b-ff6f-4db8-ae31-845cdfe00fc8" />
 
 # Project specification
 
