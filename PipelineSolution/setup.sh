@@ -6,12 +6,12 @@ set -e
 
 echo "Setting up PipelineSolution..."
 
-# Check Python version
-python_version=$(python3 --version 2>&1 | awk '{print $2}' | cut -d. -f1,2)
+# Check Python version (3.10+ required: mcp needs >=3.10; numpy 1.26 / matplotlib 3.8 need >=3.9)
+python_version=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")')
 echo "Python version: $python_version"
 
-if (( $(echo "$python_version < 3.8" | bc -l) )); then
-    echo "Error: Python 3.8+ required"
+if ! python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null; then
+    echo "Error: Python 3.10+ required (mcp needs >=3.10; numpy/matplotlib need >=3.9)"
     exit 1
 fi
 

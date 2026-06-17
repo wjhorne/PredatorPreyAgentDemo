@@ -12,6 +12,9 @@
 - No manual parsing needed
 - LLM can see exactly what's available
 
+The MCP server (`mcp_server.py`) uses the official MCP Python SDK's **FastMCP** API
+(`mcp` 1.x, stdio transport) and needs **Python ≥3.10**.
+
 ---
 
 ## Summary
@@ -97,7 +100,10 @@ PipelineSolution/
 ├── simulation_runner.py   ← Runs simulations
 ├── report_generator.py    ← Creates reports
 ├── validation.py          ← Baseline validation
-└── requirements.txt       ← Dependencies
+├── mcp_server.py          ← MCP tool server (FastMCP) for LLMs
+├── claude_config.json      ← Sample MCP client config (Claude Code)
+├── MCP_INTEGRATION.md     ← MCP setup + tool reference
+└── requirements.txt       ← Dependencies (numpy, matplotlib, reportlab, mcp)
 ```
 
 ## Verification

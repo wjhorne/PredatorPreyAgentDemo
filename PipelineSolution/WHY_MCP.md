@@ -35,26 +35,16 @@ patterns = {
 ## The Solution: MCP Tools
 
 ```python
-# New approach (mcp_server.py)
-Tool(
-    name="query_population",
-    description="Query population at a specific timestep",
-    inputSchema={
-        "type": "object",
-        "properties": {
-            "species": {
-                "type": "string",
-                "enum": ["rabbit", "fox", "both"],
-                "description": "Which species to query",
-            },
-            "timestep": {
-                "type": "integer",
-                "description": "Timestep to query (0-360)",
-            },
-        },
-        "required": ["species", "timestep"],
-    },
-)
+# New approach (mcp_server.py) — FastMCP derives the tool schema from type hints
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("predator-prey-simulation")
+
+@mcp.tool()
+def query_population(species: str, timestep: int,
+                     nx: int = 50, ny: int = 50, nt: int = 360, seed: int = 12345) -> str:
+    """Query the rabbit/fox population at a specific timestep."""
+    ...
 ```
 
 **Why this is better:**

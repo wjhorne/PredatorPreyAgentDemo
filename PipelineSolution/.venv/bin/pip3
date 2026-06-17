@@ -1,4 +1,4 @@
-#!/home/nixes/PredatorPreyAgentDemo/PipelineSolution/.venv/bin/python3
+#!/workspaces/PredatorPreyAgentDemo/PipelineSolution/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -1,4 +1,4 @@
-numpy==1.24.4
-matplotlib==3.7.5
+numpy==1.26.4
+matplotlib==3.8.4
 reportlab==4.0.4
-mcp==0.1.0
+mcp==1.28.0

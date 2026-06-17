@@ -74,9 +74,10 @@ We created **both**:
    - Good for: Quick manual queries, backward compatibility, no dependencies
    - Kept because: Some users may still prefer CLI
 
-2. **`mcp_server.py`** - New MCP tool server
+2. **`mcp_server.py`** - MCP tool server
    - Good for: LLM IDE integration, type-safe, extensible
    - Recommended for: Any LLM-based usage
+   - Implemented with the official MCP Python SDK's **FastMCP** API (`mcp` 1.x, stdio transport)
 
 ## No Redundancy - They Serve Different Purposes
 

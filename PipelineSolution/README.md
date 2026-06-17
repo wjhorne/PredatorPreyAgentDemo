@@ -1,49 +1,55 @@
 # Simulation Analysis Pipeline
 
-> **For AI Assistants (Claude Code, Gemini, etc.)**: 
-> - **Recommended**: Use the MCP server for type-safe tool access → See [MCP_INTEGRATION.md](MCP_INTEGRATION.md)
-> - **Alternative**: Use query wrapper for quick CLI access → See [.instructions.md](.instructions.md)
+A query-driven pipeline that wraps the deterministic predator–prey simulation in
+[`DevelopmentSolution/`](../DevelopmentSolution/) to answer plain-language questions
+about rabbit and fox populations, validate results against a hand-run baseline, and
+generate **text** and **PDF** reports.
 
-A query-driven pipeline that wraps the predator-prey simulation from `DevelopmentSolution/` to answer plain-language queries about rabbit and fox populations, and to generate analysis reports in text and PDF formats.
+> **For AI assistants (Claude Code, Cursor, Gemini CLI, …)**: the pipeline is also
+> exposed as an **MCP tool server** (`mcp_server.py`) for type-safe, structured tool
+> access. See [MCP_INTEGRATION.md](MCP_INTEGRATION.md). For quick CLI access, see
+> [.instructions.md](.instructions.md).
+
+## Requirements
+
+- **Python 3.10+** (tested on Python 3.12). The MCP SDK (`mcp`) requires ≥3.10; the
+  simulation core (numpy 1.26 / matplotlib 3.8) requires ≥3.9.
+- Git (to clone the repo).
 
 ## Setup
 
-### Prerequisites
-- Python 3.8+
-- Git (to clone the repo)
+### One command
 
-### Installation
-
-1. Navigate to the PipelineSolution directory:
 ```bash
 cd PipelineSolution
+./setup.sh
 ```
 
-2. Create and activate a virtual environment:
+`setup.sh` creates `.venv`, installs [`requirements.txt`](requirements.txt), verifies
+imports (`test_imports.py`), and runs the unit tests (`tests/test_core.py`).
+
+### Manual setup
+
 ```bash
+cd PipelineSolution
 python3 -m venv .venv
 source .venv/bin/activate
-```
-
-3. Install dependencies:
-```bash
 pip install --upgrade pip
 pip install -r requirements.txt
+python test_imports.py
+python -m unittest tests.test_core -q
 ```
 
-### Verify Installation
+### Verify installation
 
-Run the import test to confirm DevelopmentSolution modules are accessible:
 ```bash
 python test_imports.py
 ```
 
-Expected output:
+Expected (last lines):
+
 ```
-✓ Imported SimulationConfig, run_simulation, validate
-✓ Imported create_animation, render_animation
-✓ Created test SimulationConfig: 10x10, 5 steps, seed 12345
-✓ Ran micro simulation: returned arrays shape (10, 10, 5), (10, 10, 5)
+✓ Ran micro simulation: returned arrays shape (6, 10, 10), (6, 10, 10)
   Final rabbit total: ..., final fox total: ...
 
 ✓ All imports and basic operations successful!
@@ -51,138 +57,167 @@ Expected output:
 
 ## Usage
 
-### Query Examples
+### Plain-language queries (CLI)
 
 ```bash
-# Ask for rabbit population at a specific timestep
+# Ask for rabbit population at a specific timestep (text output)
 python pipeline.py --query "How many rabbits at step 50?" --format text
 
 # Ask for both species
 python pipeline.py --query "What are the rabbit and fox populations at step 100?"
 
-# Request a full analysis report
-python pipeline.py --query "Generate a report for the default simulation" --format pdf
+# Generate a full analysis report (PDF: summary page + time-series plot + final-step contour plots)
+python pipeline.py --query "Generate a report for the default simulation" --format pdf --output report.pdf
 
 # Override simulation parameters
 python pipeline.py --query "Simulate with nx=40, ny=40 for 200 steps, then show foxes at step 150" --format text
 
-# Validate against the golden baseline
+# Validate against the hand-run baseline
 python pipeline.py --query "Run the example configuration" --validate --format text
 ```
 
+Or via the wrapper (auto-activates `.venv`):
+
+```bash
+./query.sh "How many foxes at step 180?"
+./query.sh "Generate a PDF report" --format pdf --output report.pdf
+./query.sh "50x50 grid, 360 steps, seed 12345" --validate
+```
+
+### MCP tools (for LLM clients)
+
+`mcp_server.py` exposes five tools over the stdio MCP transport:
+`query_population`, `run_simulation`, `generate_report`, `validate_baseline`,
+`get_default_parameters`. See [MCP_INTEGRATION.md](MCP_INTEGRATION.md) for client
+configuration (Claude Code, Cursor, Gemini CLI) and examples.
+
 ## Architecture
 
-The pipeline follows a three-stage flow:
-
 ```
-Query Input
+Query Input (plain language)
     ↓
-Parse & Validate
+Parse & Validate          ← query_engine.py
     ↓
-Execute Simulation (imported from DevelopmentSolution)
+Build SimulationConfig    ← config_builder.py  (defaults from example_run/INPUTS.md)
     ↓
-Optionally Validate Against Baseline
+Execute Simulation        ← DevelopmentSolution/simulation.py  (via simulation_runner.py)
     ↓
-Generate Report (Text or PDF)
+Optionally Validate       ← validation.py  (vs DevelopmentSolution/example_run/ baseline)
+    ↓
+Generate Report           ← report_generator.py  (text or PDF)
     ↓
 Output
 ```
 
-### Key Components
+### Key components
 
-- **pipeline.py**: CLI entry point and orchestrator
-- **query_engine.py** (forthcoming): Plain-language query parser
-- **config_builder.py** (forthcoming): Converts parsed queries to SimulationConfig
-- **simulation_runner.py** (forthcoming): Executes simulations with caching
-- **report_generator.py** (forthcoming): Generates text and PDF outputs
-- **validation.py** (forthcoming): Validates results against example_run baseline
+| File | Role |
+|------|------|
+| `pipeline.py` | CLI entry point and orchestrator |
+| `query_engine.py` | Plain-language query parser (keyword/regex based) |
+| `config_builder.py` | Converts parsed queries → `SimulationConfig` |
+| `simulation_runner.py` | Runs simulations and exposes population accessors |
+| `report_generator.py` | Text and PDF report generation |
+| `validation.py` | Validates results against the `example_run` baseline |
+| `mcp_server.py` | MCP tool server (FastMCP) for LLM clients |
+| `test_imports.py` | Import smoke test |
+| `tests/test_core.py` | Unit tests (parser, config builder, runner, validator) |
+| `test_integration.sh` | End-to-end integration tests |
+| `setup.sh` / `query.sh` | One-command setup / query wrapper |
 
 ## Configuration
 
-Default parameters are inherited from `DevelopmentSolution/example_run/INPUTS.md`:
-- Grid size: 50×50
-- Time steps: 360
-- Seed: 12345
-- Rabbit growth: 1.0
-- Fox mortality: 0.72
-- Diffusion rates: rabbit 0.01, fox 0.10
-- Initial conditions: patch-based heterogeneity with patch_strength=0.80, patch_size=5
+Default parameters are inherited from [`DevelopmentSolution/example_run/INPUTS.md`](../DevelopmentSolution/example_run/INPUTS.md)
+and encoded in `config_builder.py` (`DEFAULT_CONFIG`):
 
-Override any parameter in a query using keywords like `nx=40`, `nt=200`, etc.
+- Grid: 50×50 · Steps: 360 · `dt`: 0.06 · Seed: 12345
+- Rabbit growth: 1.0 · Carrying capacity: 7.2 · Predation rate: 0.085
+- Fox growth: 0.11 · Fox mortality: 0.72
+- Diffusion: rabbit 0.01, fox 0.10
+- Init: rabbit 2.4, fox 1.1, noise 0.07, patch strength 0.80, patch size 5
 
-## Validation
+Override any parameter in a query with keywords like `nx=40`, `nt=200`, `seed=999`,
+`50x50 grid`, `200 steps`, `fox_mortality=0.9`, etc.
 
-The pipeline validates output against the hand-run baseline stored in `DevelopmentSolution/example_run/`:
-- Parameters: as recorded in INPUTS.md
-- Expected totals: from population_counts.csv
+## Validation against the hand-run baseline
 
-Run with `--validate` flag to check exact-match agreement within machine precision.
+The pipeline validates its output against the hand-run baseline in
+`DevelopmentSolution/example_run/`:
+
+- Parameters: as recorded in `INPUTS.md`
+- Expected totals: from `population_counts.csv`
+
+Run with `--validate` to check agreement within numerical tolerance (`1e-5`; the
+underlying simulation is bit-identical to the baseline — the ~5e-7 residual is just the
+6-decimal rounding in the stored CSV).
+
+```bash
+./query.sh "50x50 grid, 360 steps, seed 12345" --validate
+# → Status: PASSED
+```
 
 ## Tests
 
-(To be implemented) Unit and integration tests cover:
-- Query parsing for various request patterns
-- Config validation and error handling
-- Exact-match baseline validation
-- Text and PDF output generation
-- CLI integration
-
-Run tests with:
 ```bash
-python -m unittest discover -s tests -p 'test_*.py'
+python -m unittest tests.test_core -v      # 17 unit tests
+bash test_integration.sh                     # 6 end-to-end tests (incl. PDF + validation)
+python test_imports.py                       # import smoke test
 ```
 
-## Project Structure
+All pass on Python 3.12 with the pinned dependencies.
+
+## Project structure
 
 ```
 PipelineSolution/
-├── README.md (this file)
-├── requirements.txt
-├── pipeline.py
-├── query_engine.py
-├── config_builder.py
-├── simulation_runner.py
-├── report_generator.py
-├── validation.py
-├── test_imports.py
+├── README.md                 (this file)
+├── requirements.txt           numpy, matplotlib, reportlab, mcp
+├── setup.sh                   one-command setup
+├── query.sh                   query wrapper (auto-activates venv)
+├── pipeline.py                CLI entry point / orchestrator
+├── query_engine.py            plain-language parser
+├── config_builder.py          query → SimulationConfig
+├── simulation_runner.py       simulation execution
+├── report_generator.py        text + PDF reports
+├── validation.py              baseline validation
+├── mcp_server.py              MCP tool server (FastMCP)
+├── claude_config.json          sample MCP client config (Claude Code)
+├── test_imports.py            import smoke test
+├── test_integration.sh        end-to-end integration tests
+├── test_report.pdf            sample generated PDF report
 ├── tests/
-│   ├── test_query_parser.py
-│   ├── test_config_builder.py
-│   ├── test_validation.py
-│   └── test_end_to_end.py
-├── baselines/
-│   └── example_baseline.json
-└── outputs/
-    └── (generated reports and logs)
+│   ├── __init__.py
+│   └── test_core.py           unit tests
+├── .instructions.md           AI assistant instructions
+├── AI_SETUP_GUIDE.md          AI-friendly setup guide
+├── MCP_INTEGRATION.md         MCP server setup + tool reference
+├── WHY_MCP.md                 rationale: query engine vs MCP
+├── ARCHITECTURE_DECISION.md   architecture tradeoff notes
+└── QUICKSTART.txt             one-page quick reference
 ```
 
 ## Reproducibility
 
-All simulations use deterministic seeds. To exactly reproduce a previous result:
-1. Note the query and seed used (reported in output)
-2. Re-run with the same query or explicitly pass `--seed <value>`
+All simulations use deterministic seeds (`np.random.default_rng(seed)`). To reproduce a
+previous result, re-run with the same query/seed (the seed is reported in the output):
 
-Example:
 ```bash
-python pipeline.py --query "..." --seed 12345 --format pdf
+python pipeline.py --query "How many rabbits at step 50?" --seed 12345 --format text
 ```
 
-The PDF and text outputs include instructions for exact reproducibility.
+PDF and text outputs include the configuration used, for full traceability.
 
-## Known Limitations
+## Known limitations
 
-- Parser is keyword-based; complex natural language is simplified to common request patterns.
-- PDF generation requires reportlab; plain-text output does not depend on it.
-- Single-query model; no multi-turn agent dialogue or persistent state across runs.
+- The query parser is keyword/regex based; complex natural language is reduced to common
+  request patterns. For free-form LLM input, prefer the MCP tools.
+- PDF generation requires `reportlab`; text output does not.
+- MCP support requires the `mcp` package (Python ≥3.10).
+- Single-query model; no multi-turn dialogue or persistent state across runs.
 
-## Future Work
+## Future work
 
-- More sophisticated NLP parser for complex queries
-- Interactive visualizations and Jupyter notebook support
-- Ensemble simulation comparison
-- Parameter sweep automation
-- Web service wrapper
-
----
-
-For questions or issues, see the main project [README.md](/README.md).
+- Richer NLP parsing (or rely on LLM + MCP tools instead).
+- Parameter sweeps and sensitivity analysis.
+- Ensemble runs with uncertainty bands.
+- Interactive/Jupyter visualizations.

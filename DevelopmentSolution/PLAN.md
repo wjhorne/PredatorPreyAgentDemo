@@ -119,7 +119,7 @@ Program output:
 
 ## 7. Reproducible Environment Plan
 
-1. Require Python 3.11+ (or chosen target version) and document it.
+1. Require Python 3.9+ (tested on Python 3.12; numpy 1.26 / matplotlib 3.8 need >=3.9) and document it.
 2. Create isolated virtual environment:
    - `python3 -m venv .venv`
 3. Activate environment:

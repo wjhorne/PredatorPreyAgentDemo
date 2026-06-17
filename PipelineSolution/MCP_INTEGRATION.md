@@ -47,24 +47,30 @@ Structured result
 
 ## Using the MCP Server
 
+> `mcp_server.py` is built on the official MCP Python SDK's **FastMCP** API
+> (`mcp` 1.x) and speaks the **stdio** transport. Run `./setup.sh` first so the
+> `.venv` and dependencies exist, then point your client at the venv interpreter
+> (see `claude_config.json`). Requires **Python ≥3.10**.
+
 ### Setup
 
-1. Install MCP package:
+1. Install dependencies (run `./setup.sh` once, or manually):
    ```bash
-   pip install -r requirements.txt  # includes mcp==0.1.0
+   pip install -r requirements.txt  # includes mcp==1.28.0 (FastMCP; needs Python >=3.10)
    ```
 
 2. Configure your IDE to use the MCP server:
 
    **Claude Code / Claude in VS Code**:
-   - Add to `.claude/config.json` (or use provided `claude_config.json`):
+   - Add to `.claude/config.json` (or copy the provided `claude_config.json`):
      ```json
      {
        "mcpServers": {
          "predator-prey-simulation": {
-           "command": "python",
+           "command": "${workspaceFolder}/PipelineSolution/.venv/bin/python",
            "args": ["mcp_server.py"],
-           "cwd": "${workspaceFolder}/PipelineSolution"
+           "cwd": "${workspaceFolder}/PipelineSolution",
+           "env": { "PYTHONPATH": "${workspaceFolder}" }
          }
        }
      }
@@ -78,9 +84,10 @@ Structured result
      ```json
      "mcpServers": {
        "predator-prey-simulation": {
-         "command": "python",
+         "command": "${workspaceFolder}/PipelineSolution/.venv/bin/python",
          "args": ["mcp_server.py"],
-         "cwd": "${workspaceFolder}/PipelineSolution"
+         "cwd": "${workspaceFolder}/PipelineSolution",
+         "env": { "PYTHONPATH": "${workspaceFolder}" }
        }
      }
      ```
@@ -299,11 +306,12 @@ The old `query_engine.py` and `query.sh` still work for backward compatibility, 
 
 ## Technical Notes
 
-- MCP server runs in-process with the LLM client (fast, no network)
-- All tools are async-ready for concurrent calls
-- Errors are caught and returned as tool results (not exceptions)
-- Parameters are validated before simulation runs
-- Results are structured (JSON) for parsing
+- The MCP server runs as a subprocess speaking **stdio JSON-RPC** with the LLM client (the default transport for Claude Code / Cursor / Gemini CLI).
+- Tools are implemented with the **FastMCP** high-level API (`@mcp.tool()` on plain functions with type hints + docstrings); schemas are derived from the type hints.
+- All tool handlers are synchronous; FastMCP runs them on its event loop as needed.
+- Errors are caught and returned as tool results (not exceptions).
+- Parameters are validated against the schema (and the underlying `SimulationConfig.validate()`) before simulation runs.
+- Results are returned as `TextContent` (strings); JSON statistics are embedded in the text.
 
 ## Troubleshooting
 

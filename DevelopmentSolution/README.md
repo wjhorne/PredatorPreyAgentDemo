@@ -2,8 +2,10 @@
 
 This folder contains a deterministic 2D rabbit-fox predator-prey simulation with diffusion.
 
+It is the simulation engine wrapped by [`../PipelineSolution/`](../PipelineSolution/), which adds a plain-language query pipeline, baseline validation, and text/PDF reporting.
+
 ## Requirements
-- Python 3.8+
+- Python 3.9+ (tested on Python 3.12)
 - Linux/macOS shell commands shown below (Windows PowerShell equivalents are straightforward)
 
 ## Reproducible Setup

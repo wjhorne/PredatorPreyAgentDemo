@@ -1,3 +1,43 @@
+# PredatorPreyAgentDemo
+
+This repository holds two reference solutions built with agentic AI:
+
+- **[`DevelopmentSolution/`](DevelopmentSolution/)** — a deterministic 2D rabbit–fox predator–prey simulation (numpy + matplotlib) with a CLI for grid size, steps, and model parameters. This is the simulation engine the pipeline wraps.
+- **[`PipelineSolution/`](PipelineSolution/)** — a query-driven analysis pipeline that wraps `DevelopmentSolution/`. It answers plain-language questions about rabbit/fox populations, validates results against a hand-run baseline, and produces both **text** and **PDF** reports. It also exposes an **MCP tool server** for LLM clients (Claude Code, Cursor, Gemini CLI).
+
+## Quickstart
+
+Requires **Python 3.10+** (tested on Python 3.12). `PipelineSolution` needs 3.10+ because it ships the MCP SDK; `DevelopmentSolution` alone needs 3.9+.
+
+### Run the simulation — `DevelopmentSolution`
+
+```bash
+cd DevelopmentSolution
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python main.py --nx 50 --ny 50 --nt 360 --seed 12345 --no-show
+```
+
+This reproduces `DevelopmentSolution/example_run/population_counts.csv` exactly (the simulation is deterministic for a fixed seed). See [`DevelopmentSolution/README.md`](DevelopmentSolution/README.md).
+
+### Run the analysis pipeline — `PipelineSolution`
+
+```bash
+cd PipelineSolution
+./setup.sh                                            # one-command setup: venv, deps, tests
+./query.sh "How many foxes at step 180?"               # plain-language query → text
+./query.sh "Generate a PDF report" --format pdf --output report.pdf
+./query.sh "50x50 grid, 360 steps, seed 12345" --validate   # exact-match vs hand-run baseline
+```
+
+For LLM/MCP usage (Claude Code, Cursor, Gemini CLI), see [`PipelineSolution/MCP_INTEGRATION.md`](PipelineSolution/MCP_INTEGRATION.md) and [`PipelineSolution/README.md`](PipelineSolution/README.md).
+
+---
+
+# Project specification
+
+The sections below are the original project brief (read by anyone implementing a *new* solution). `DevelopmentSolution/` and `PipelineSolution/` are the provided reference baselines that new solutions are expected to differ from via a self-chosen novelty.
+
 ## Code Development Project Goal
 
 Using agentic AI, build a small Python program that simulations rabbits and foxes on a 2D grid for Nt steps. Rabbits grow locally, foxes consume rabbits and grow based on their consumption, both diffuse to neighboring cells. Animate the result with matplotlib and report species populations at each time step. Provide a command line interface to specify grid size, steps, and key model parameters. Keep dependencies to numpy + matplotlib. 
@@ -5,14 +45,6 @@ Using agentic AI, build a small Python program that simulations rabbits and foxe
 ## Code Development Instructions
 
 With the agentic tool of your choice, start from an empty directory and use prompts to successfully create the requisite code. Test the resulting code by hand to roughly verify results. You may introduce the requirements below as a prompt, but the novelty must be one of your own choosing.
-
-**Example using Gemini**
-- install gemini-cli as appropriate for your workstation
-- mkdir project_directory
-- cd project_directory
-- gemini -s
-- Use oauth to log into your Gemini account
-- prompt the agent as necessary
 
 ## Final Code Program Requirements
 
@@ -33,22 +65,6 @@ Using agentic AI, create an agent based pipeline to run the predator-prey simula
 ## Simulation Analysis Instructions
 
 Clone the PredatorPreyAgentDemo repo. With an agentic AI tool of your choice enter the repo directory and use prompts to create the pipeline. You may include the requirements below as part of your prompts, but the novelty must be of your own choice. Test the pipeline using the same agentic tool you used for creation of the pipeline. 
-
-**Example using Gemini**
-
-- install gemini-cli as appropriate for your workstation
-- git clone git@github.com:wjhorne/PredatorPreyAgentDemo.git
-- cd PredatorPreyAgentDemo
-- gemini -s
-- Use oauth to log into your Gemini account
-- prompt the agent as necessary to create the pipeline inside of a folder within PredatorPreyAgentDemo
-
-**To test the pipeline**
-- cd PredatorPreyAgentDemo
-- gemini -s
-- Use oauth to log into your Gemini acount
-- prompt the agent to parse your project directory for the pipeline
-- Ask the agent pipeline test questions to show requirements are fulfilled 
 
 ## Simulation Pipeline Requirements
 

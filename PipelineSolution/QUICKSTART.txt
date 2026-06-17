@@ -2,6 +2,9 @@
 QUICKSTART FOR AI ASSISTANTS
 ===============================================================================
 
+REQUIRES:
+  Python 3.10+ (tested on Python 3.12)
+
 SETUP (one time):
   ./setup.sh
 
@@ -27,6 +30,9 @@ DEFAULT PARAMETERS:
 OUTPUT FORMATS:
   --format text (default): Print to terminal
   --format pdf: Generate multi-page PDF with plots
+
+MCP (for LLM clients: Claude Code / Cursor / Gemini CLI):
+  python mcp_server.py        # stdio MCP server (FastMCP); see MCP_INTEGRATION.md
 
 See .instructions.md for detailed documentation.
 See README.md for full guide.

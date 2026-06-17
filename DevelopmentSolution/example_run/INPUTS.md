@@ -60,6 +60,8 @@ python main.py \
 	--no-show
 ```
 
+> **Reproducibility note:** the stdout from this command matches `population_counts.csv` exactly (deterministic for a fixed seed). Verified on Python 3.12 with `numpy` 1.26.4 and `matplotlib` 3.8.4.
+
 ## Survival and Steady-State Indicator (Final 50 Steps)
 - mean absolute rabbit change per step: 1.417105
 - mean absolute fox change per step: 2.271934
