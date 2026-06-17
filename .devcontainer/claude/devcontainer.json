@@ -1,5 +1,5 @@
 {
-    "name": "DevEnviron Base",
+    "name": "DevEnviron Claude Code",
     "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
     "features": {
         // Installs a modern Node.js version (latest LTS or specific)
@@ -7,5 +7,5 @@
             "version": "lts"
         }
     },
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y vim curl",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y vim curl && curl -fsSL https://claude.ai/install.sh | bash",
 }

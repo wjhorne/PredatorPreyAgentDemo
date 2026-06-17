@@ -1,42 +1,8 @@
 # PredatorPreyAgentDemo
 
-This repository holds two reference solutions built with agentic AI:
-
-- **[`DevelopmentSolution/`](DevelopmentSolution/)** — a deterministic 2D rabbit–fox predator–prey simulation (numpy + matplotlib) with a CLI for grid size, steps, and model parameters. This is the simulation engine the pipeline wraps.
-- **[`PipelineSolution/`](PipelineSolution/)** — a query-driven analysis pipeline that wraps `DevelopmentSolution/`. It answers plain-language questions about rabbit/fox populations, validates results against a hand-run baseline, and produces both **text** and **PDF** reports. It also exposes an **MCP tool server** for LLM clients (Claude Code, Cursor, Gemini CLI).
-
-## Quickstart
-
-Requires **Python 3.10+** (tested on Python 3.12). `PipelineSolution` needs 3.10+ because it ships the MCP SDK; `DevelopmentSolution` alone needs 3.9+.
-
-### Run the simulation — `DevelopmentSolution`
-
-```bash
-cd DevelopmentSolution
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python main.py --nx 50 --ny 50 --nt 360 --seed 12345 --no-show
-```
-
-This reproduces `DevelopmentSolution/example_run/population_counts.csv` exactly (the simulation is deterministic for a fixed seed). See [`DevelopmentSolution/README.md`](DevelopmentSolution/README.md).
-
-### Run the analysis pipeline — `PipelineSolution`
-
-```bash
-cd PipelineSolution
-./setup.sh                                            # one-command setup: venv, deps, tests
-./query.sh "How many foxes at step 180?"               # plain-language query → text
-./query.sh "Generate a PDF report" --format pdf --output report.pdf
-./query.sh "50x50 grid, 360 steps, seed 12345" --validate   # exact-match vs hand-run baseline
-```
-
-For LLM/MCP usage (Claude Code, Cursor, Gemini CLI), see [`PipelineSolution/MCP_INTEGRATION.md`](PipelineSolution/MCP_INTEGRATION.md) and [`PipelineSolution/README.md`](PipelineSolution/README.md).
-
----
-
 # Project specification
 
-The sections below are the original project brief (read by anyone implementing a *new* solution). `DevelopmentSolution/` and `PipelineSolution/` are the provided reference baselines that new solutions are expected to differ from via a self-chosen novelty.
+Depending on your interest, choose whether to do the Code Development or Simulation Analysis projects described below. Setup instructions are included at the bottom of this document.
 
 ## Code Development Project Goal
 
@@ -76,3 +42,68 @@ Clone the PredatorPreyAgentDemo repo. With an agentic AI tool of your choice ent
   - Create a goal-seeking capability where an agent could answer questions like `What rabbit reproduction rate keeps foxes alive past t = 200?`
   - Produce uncertainty bands of fox and rabbit populations via ensemble runs of different seeds
   - Introduce the ability to perform sensitivity analysis of results from the simulation to the parameters
+
+## Repo Overview
+
+This repository holds two reference solutions built with agentic AI:
+
+- **[`DevelopmentSolution/`](DevelopmentSolution/)** — a deterministic 2D rabbit–fox predator–prey simulation (numpy + matplotlib) with a CLI for grid size, steps, and model parameters. This is the simulation engine the pipeline wraps.
+- **[`PipelineSolution/`](PipelineSolution/)** — a query-driven analysis pipeline that wraps `DevelopmentSolution/`. It answers plain-language questions about rabbit/fox populations, validates results against a hand-run baseline, and produces both **text** and **PDF** reports. It also exposes an **MCP tool server** for LLM clients (Claude Code, Cursor, Gemini CLI).
+
+## Quickstart
+
+Requires **Python 3.10+** (tested on Python 3.12). `PipelineSolution` needs 3.10+ because it ships the MCP SDK; `DevelopmentSolution` alone needs 3.9+.
+
+### Run the simulation — `DevelopmentSolution`
+
+```bash
+cd DevelopmentSolution
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python main.py --nx 50 --ny 50 --nt 360 --seed 12345 --no-show
+```
+
+This reproduces `DevelopmentSolution/example_run/population_counts.csv` exactly (the simulation is deterministic for a fixed seed). See [`DevelopmentSolution/README.md`](DevelopmentSolution/README.md).
+
+### Run the analysis pipeline — `PipelineSolution`
+
+```bash
+cd PipelineSolution
+./setup.sh                                            # one-command setup: venv, deps, tests
+./query.sh "How many foxes at step 180?"               # plain-language query → text
+./query.sh "Generate a PDF report" --format pdf --output report.pdf
+./query.sh "50x50 grid, 360 steps, seed 12345" --validate   # exact-match vs hand-run baseline
+```
+
+For LLM/MCP usage (Claude Code, Cursor, Gemini CLI), see [`PipelineSolution/MCP_INTEGRATION.md`](PipelineSolution/MCP_INTEGRATION.md) and [`PipelineSolution/README.md`](PipelineSolution/README.md).
+
+## Developing with agentic AI (devcontainers)
+
+This repo ships **four prebuilt devcontainer configurations** under [`.devcontainer/`](.devcontainer/), each installing a different agentic AI tool. Open the repo in **VS Code** (or **GitHub Codespaces**) and run **Dev Containers: Reopen in Container…** from the Command Palette (Ctrl/Cmd+Shift+P). VS Code detects the multiple `.devcontainer/*/` configs and prompts you to pick one. The selected config builds the container, installs the agent, and drops you at the repo root.
+
+| Choice | `.devcontainer/` folder | Agent installed | Start the agent (from the repo root) |
+| --- | --- | --- | --- |
+| OpenWeights | `.devcontainer/openweights/` | `pi` + `pi-ollama-cloud`, `pi-web-access`, `pi-footer` extensions | `pi` |
+| Codex | `.devcontainer/codex/` | `@openai/codex` | `codex` |
+| Gemini | `.devcontainer/gemini/` | `@google/gemini-cli` | `gemini` |
+| Claude | `.devcontainer/claude/` | Claude Code | `claude` |
+
+Once the container is built, start the agent binary **from the base of this repo** and begin prompting:
+
+```bash
+# OpenWeights (pi)
+pi
+
+# Codex
+codex
+
+# Gemini
+gemini
+
+# Claude
+claude
+```
+
+Each agent walks you through its one-time authentication (API key or login) on first run, after which you can prompt it to build a novel simulation (see the *Code Development Project Goal* above) or a novel analysis pipeline (see the *Simulation Analysis Project Goal* above).
+
+---
