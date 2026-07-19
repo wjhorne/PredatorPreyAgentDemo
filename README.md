@@ -49,7 +49,7 @@ Clone the PredatorPreyAgentDemo repo. With an agentic AI tool of your choice ent
 This repository holds two reference solutions built with agentic AI:
 
 - **[`DevelopmentSolution/`](DevelopmentSolution/)** — a deterministic 2D rabbit–fox predator–prey simulation (numpy + matplotlib) with a CLI for grid size, steps, and model parameters. This is the simulation engine the pipeline wraps.
-- **[`PipelineSolution/`](PipelineSolution/)** — a query-driven analysis pipeline that wraps `DevelopmentSolution/`. It answers plain-language questions about rabbit/fox populations, validates results against a hand-run baseline, and produces both **text** and **PDF** reports. It also exposes an **MCP tool server** for LLM clients (Claude Code, Cursor, Gemini CLI).
+- **[`PipelineSolution/`](PipelineSolution/)** — a query-driven analysis pipeline that wraps `DevelopmentSolution/`. It answers plain-language questions about rabbit/fox populations, validates results against a hand-run baseline, and produces both **text** and **PDF** reports. It also exposes an **MCP tool server** for LLM clients (Claude Code, Cursor, Antigravity CLI).
 
 ## Quickstart
 
@@ -76,7 +76,7 @@ cd PipelineSolution
 ./query.sh "50x50 grid, 360 steps, seed 12345" --validate   # exact-match vs hand-run baseline
 ```
 
-For LLM/MCP usage (Claude Code, Cursor, Gemini CLI), see [`PipelineSolution/MCP_INTEGRATION.md`](PipelineSolution/MCP_INTEGRATION.md) and [`PipelineSolution/README.md`](PipelineSolution/README.md).
+For LLM/MCP usage (Claude Code, Cursor, Antigravity CLI), see [`PipelineSolution/MCP_INTEGRATION.md`](PipelineSolution/MCP_INTEGRATION.md) and [`PipelineSolution/README.md`](PipelineSolution/README.md).
 
 ## Developing with agentic AI (devcontainers)
 
@@ -86,7 +86,7 @@ This repo ships **four prebuilt devcontainer configurations** under [`.devcontai
 | --- | --- | --- | --- |
 | OpenWeights | `.devcontainer/openweights/` | `pi` + `pi-ollama-cloud`, `pi-web-access`, `pi-footer` extensions | `pi` |
 | Codex | `.devcontainer/codex/` | `@openai/codex` | `codex` |
-| Gemini | `.devcontainer/gemini/` | `@google/gemini-cli` | `gemini` |
+| Antigravity | `.devcontainer/gemini/` | Antigravity CLI (`agy`) | `agy` |
 | Claude | `.devcontainer/claude/` | Claude Code | `claude` |
 
 Once the container is built, start the agent binary **from the base of this repo** and begin prompting:
@@ -98,8 +98,8 @@ pi
 # Codex
 codex
 
-# Gemini
-gemini
+# Antigravity
+agy
 
 # Claude
 claude

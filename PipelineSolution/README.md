@@ -5,7 +5,7 @@ A query-driven pipeline that wraps the deterministic predator–prey simulation 
 about rabbit and fox populations, validate results against a hand-run baseline, and
 generate **text** and **PDF** reports.
 
-> **For AI assistants (Claude Code, Cursor, Gemini CLI, …)**: the pipeline is also
+> **For AI assistants (Claude Code, Cursor, Antigravity CLI, …)**: the pipeline is also
 > exposed as an **MCP tool server** (`mcp_server.py`) for type-safe, structured tool
 > access. See [MCP_INTEGRATION.md](MCP_INTEGRATION.md). For quick CLI access, see
 > [.instructions.md](.instructions.md).
@@ -89,7 +89,7 @@ Or via the wrapper (auto-activates `.venv`):
 `mcp_server.py` exposes five tools over the stdio MCP transport:
 `query_population`, `run_simulation`, `generate_report`, `validate_baseline`,
 `get_default_parameters`. See [MCP_INTEGRATION.md](MCP_INTEGRATION.md) for client
-configuration (Claude Code, Cursor, Gemini CLI) and examples.
+configuration (Claude Code, Cursor, Antigravity CLI) and examples.
 
 ## Architecture
 
